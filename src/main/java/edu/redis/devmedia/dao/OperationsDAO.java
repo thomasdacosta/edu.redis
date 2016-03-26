@@ -1,12 +1,18 @@
 package edu.redis.devmedia.dao;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import com.google.gson.Gson;
+
+import edu.redis.devmedia.object.Hero;
 import edu.redis.devmedia.object.SerializeObject;
 import edu.redis.devmedia.object.SimpleObject;
 
 public class OperationsDAO extends RedisDAO {
+	
+	private Gson gson = new Gson();
 	
 	public OperationsDAO() {
 		super();
@@ -74,10 +80,35 @@ public class OperationsDAO extends RedisDAO {
 	 * Operações com listas
 	 */
 	public void listOperations() {
-		String keyJla = "dc:justiceleague";
 		String keyAvengers = "marvel:avengers";
 		
+		Hero heroIroMan = new Hero();
+		heroIroMan.setAge(35);
+		heroIroMan.setCompany("Marvel");
+		heroIroMan.setIdentity("Tony Stark");
+		heroIroMan.setName("IRON MAN");
 		
+		Hero heroCaptain = new Hero();
+		heroCaptain.setAge(75);
+		heroCaptain.setCompany("Marvel");
+		heroCaptain.setIdentity("Steve Rogers");
+		heroCaptain.setName("CAPTAIN AMERICA");
+		
+		long totalElements = jedis().llen(keyAvengers);
+		System.out.println("Total elements in list:" + totalElements);
+		
+		for (int i=1;i<=totalElements;i++) {
+			System.out.println("Element removed:" + jedis().lpop(keyAvengers));	
+		}
+		
+		jedis().rpush(keyAvengers, gson.toJson(heroCaptain), gson.toJson(heroIroMan));
+		jedis().lpush(keyAvengers, "Thor", "Hulk");
+		jedis().rpush(keyAvengers, "Spider-Man", "Hawkeye");
+		
+		List<String> listAvengers = jedis().lrange(keyAvengers, 0, totalElements);
+		for (String elements : listAvengers) {
+			System.out.println("Hero:" + elements);
+		}
 	}
 	
 }
