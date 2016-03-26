@@ -11,6 +11,8 @@ public class AppMain {
 		basicOperationsDAO.serializeDeserializeOperations();
 		basicOperationsDAO.hashesOperations();
 		basicOperationsDAO.listOperations();
+		basicOperationsDAO.setOperations();
+		basicOperationsDAO.transactionsOperations();
 	}
 
 }

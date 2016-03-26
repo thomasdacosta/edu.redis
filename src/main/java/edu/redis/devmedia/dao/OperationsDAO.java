@@ -3,6 +3,7 @@ package edu.redis.devmedia.dao;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import com.google.gson.Gson;
@@ -10,6 +11,7 @@ import com.google.gson.Gson;
 import edu.redis.devmedia.object.Hero;
 import edu.redis.devmedia.object.SerializeObject;
 import edu.redis.devmedia.object.SimpleObject;
+import redis.clients.jedis.Transaction;
 
 public class OperationsDAO extends RedisDAO {
 	
@@ -51,6 +53,8 @@ public class OperationsDAO extends RedisDAO {
 				e.printStackTrace();
 			}
 		}
+		
+		jedis().mset("value:1", "1", "value:2", "2", "value:3","3");
 	}
 	
 	/**
@@ -145,7 +149,41 @@ public class OperationsDAO extends RedisDAO {
 	 * - Armazena somente strings
 	 */
 	public void setOperations() {
+		String newVideogames = "new:videogames";
+		jedis().sadd(newVideogames, "PS2", "PS3", "PS4", "XBox One", "XBox 360");
+		jedis().sadd(newVideogames, "PS1", "PS2");
 		
+		Set<String> values = jedis().smembers(newVideogames);
+		
+		for (String value : values) {
+			System.out.println(value);
+		}
+		
+		String oldVideogames = "old:videogames";
+		jedis().zadd(oldVideogames, 10, "Atari");
+		jedis().zadd(oldVideogames, 11, "SNES");
+		jedis().zadd(oldVideogames, 12, "MegaDrive");
+		
+		System.out.println(jedis().sismember(newVideogames, "NES"));
+	}
+	
+	public void transactionsOperations() {
+		Transaction transaction = jedis().multi();
+		try {
+			boolean error = true;
+			transaction.set("value:transaction:1", "1");
+			transaction.set("value:transaction:2", "2");
+			transaction.set("value:transaction:3", "3");
+			transaction.set("value:transaction:4", "4");
+			transaction.set("value:transaction:5", "5");
+			
+			if (error)
+				throw new Exception();
+			
+			transaction.exec();
+		} catch (Exception ex) {
+			transaction.discard();
+		}
 	}
 	
 }
