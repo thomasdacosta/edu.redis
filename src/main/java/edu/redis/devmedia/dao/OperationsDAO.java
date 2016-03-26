@@ -138,4 +138,14 @@ public class OperationsDAO extends RedisDAO {
 		}
 	}
 	
+	/**
+	 * Operações com conjuntos.
+	 * - Em conjuntos não existe valor repetido
+	 * - Podem ser ordenados
+	 * - Armazena somente strings
+	 */
+	public void setOperations() {
+		
+	}
+	
 }
