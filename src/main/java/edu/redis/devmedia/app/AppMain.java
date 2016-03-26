@@ -6,6 +6,7 @@ public class AppMain {
 	
 	public static void main(String[] args) {
 		OperationsDAO basicOperationsDAO = new OperationsDAO();
+		basicOperationsDAO.clear();
 		basicOperationsDAO.basicOperations();
 		basicOperationsDAO.serializeDeserializeOperations();
 		basicOperationsDAO.hashesOperations();
