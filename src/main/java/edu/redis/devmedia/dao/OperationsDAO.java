@@ -35,7 +35,8 @@ public class OperationsDAO extends RedisDAO {
 		System.out.println(jedis().get("hero:batman"));
 		
 		for (int i=1;i<=10;i++) {
-			jedis().incr("hero:superman");	
+			jedis().incr("hero:superman");
+			jedis().incrByFloat("hero:greenlantern", 12.5);
 		}
 		
 		System.out.println(jedis().get("hero:superman"));
@@ -87,6 +88,12 @@ public class OperationsDAO extends RedisDAO {
 		jedis().hset(keyDc, "name", "Batman");
 		jedis().hset(keyDc, "identity", "Bruce Wayne");
 		jedis().hset(keyDc, "power", "Bilionare");
+		
+		Map<String, String> values = new HashMap<>();
+		values.put("name", "Bruce");
+		values.put("lastName", "Wayne");
+		values.put("age", "35");
+		jedis().hmset("user:site", values);
 		
 		Map<String, String> heroesMarvel = jedis().hgetAll(keyMarvel);
 		for (String keys : heroesMarvel.keySet()) {
